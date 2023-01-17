@@ -1,12 +1,12 @@
 
-runoncepath("0:/common/prettyprint.ks").
+runoncepath("0:/common/print-status.ks").
 
 function maintain_altitude {
 parameter desired_alt.   // in m
 parameter desired_speed. // in m/s
 
-local throttle_controller is pidloop(0.33, 0.33, 0.33, 0, 1 ).
-local speed_controller    is pidloop(0.63, 0.33, 0.03, (-1*desired_speed), desired_speed).
+local throttle_controller is pidloop(0.63, 0.33, 0.03, 0, 1 ).
+local speed_controller    is pidloop(0.73, 0.13, 0.10, (-1*desired_speed), desired_speed).
 
 set speed_controller:setpoint to desired_alt.
 
@@ -18,8 +18,6 @@ set speed_controller:setpoint to desired_alt.
 
 	print_vessel_stats(calculated_throttle).
 	print_target_stats(desired_alt, desired_speed).
-
-	print SASMODE at (0,24).
 
 	return calculated_throttle.
 }

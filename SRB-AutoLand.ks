@@ -1,45 +1,45 @@
-
-PRINT "Loading dependencies...".
+print "Loading dependencies...".
 RUNONCEPATH("0:/common/pid-controllers.ks").
 
-PRINT "SRB OS Loaded".
+print "SRB OS Loaded".
 
-WAIT 5.
+wait 5.
 
+print "Waiting for sepatation...".
+wait UNTIL SHIP:LIQUIDFUEL = STAGE:LIQUIDFUEL.
 
-PRINT "Waiting for sepatation...".
-WAIT UNTIL SHIP:LIQUIDFUEL = STAGE:LIQUIDFUEL.
+local calculated_throttle IS 0.
+local desired_speed IS 100.
+lock throttle TO calculated_throttle.
 
-LOCAL calculated_throttle IS 0.
-LOCAL desired_speed IS 100.
-LOCK throttle TO calculated_throttle.
+clearscreen.
 
-CLEARSCREEN.
+print "SEPRATION DETECTED!".
+print "Waiting for descent...".
 
-PRINT "SEPRATION DETECTED!".
-PRINT "Waiting for descent...".
-WAIT UNTIL SHIP:VERTICALSPEED < 5.
-
-WAIT 0.5.
+wait until SHIP:VERTICALSPEED < 5.
 
 SAS ON.
-WAIT 0.5.
+print "SAS ENABLED".
 
-PRINT "SAS ENABLED".
-PRINT "waiting to burn retrograde...".
+wait 0.
+set SASMODE TO "retrograde".
+print "SAS set to " + SASMODE.
+wait 2.
 
-WAIT 5.
-SET SASMODE TO "RADIALOUT".
-SAS OFF.
-SAS ON.
-WAIT 0.
-SET SASMODE TO "retrograde".
-CLEARSCREEN.
+clearscreen.
 
-until SHIP:LIQUIDFUEL < 1 {
-	if (ALT:RADAR < 200) {
-		SET desired_speed TO 10.
+until (SHIP:LIQUIDFUEL < 1) AND (ALT:RADAR > 10) {
+	set desired_speed to (ALT:RADAR / 10).
+
+	if (ALT:RADAR < 100) AND (SHIP:VERTICALSPEED < 0) {
+		set SASMODE TO "RADIALOUT".
+		LEGS ON.
 	}
+
+	if (ALT:RADAR < 10) { break. }
 
 	set calculated_throttle to maintain_altitude(0, desired_speed).
 }
+
+set calculated_throttle to 0.

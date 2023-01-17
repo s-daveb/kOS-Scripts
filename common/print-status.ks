@@ -6,6 +6,7 @@ function print_vessel_stats {
 	print "current speed: " + SHIP:VERTICALSPEED at (0,14).
 	print "throttle: " + (current_throttle * 100) + "%          "  at (0,17).
 
+	IF SAS print ("SAS: " + SASMODE) at (0,24).
 }
 
 function print_target_stats {
